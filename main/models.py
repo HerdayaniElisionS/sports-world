@@ -1,10 +1,8 @@
 import uuid
 from django.db import models
 
-from django.db import models
-
 class Product(models.Model):
-    name = models.CharField(max_length=255)  # item name
+    name = models.CharField(max_length=255)  
     price = models.IntegerField()  # item price
     description = models.TextField()  # item description
     thumbnail = models.URLField()  # item image URL

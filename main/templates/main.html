@@ -1,7 +1,52 @@
-<h1>{{ app_name }}</h1>
+{% extends 'base.html' %}
+{% block title %}Product Catalog{% endblock title %}
+{% block content %}
+<h1>Product Catalog</h1>
 
-<h5>Name: </h5>
-<p>{{ student_name }}</p>
+<h5>NPM:</h5>
+<p>{{ npm }}</p>
 
-<h5>Class: </h5>
-<p>{{ student_class }}</p>
+<h5>Name:</h5>
+<p>{{ name }}</p>
+
+<h5>Class:</h5>
+<p>{{ class }}</p>
+
+<a href="{% url 'main:add_product' %}">
+  <button>+ Add Product</button>
+</a>
+
+<hr>
+
+{% if not products %}
+  <p>No products available.</p>
+{% else %}
+  {% for product in products %}
+    <div>
+      <h2>
+        <a href="{% url 'main:product_detail' product.id %}">{{ product.name }}</a>
+      </h2>
+
+      <p>
+        <b>Category:</b> {{ product.category }}
+        {% if product.is_featured %} | <b>Featured</b>{% endif %}
+        | <b>Price:</b> {{ product.price }}
+      </p>
+
+      {% if product.thumbnail %}
+        <img src="{{ product.thumbnail }}" alt="product image" width="150" height="100">
+        <br />
+      {% endif %}
+
+      <p>{{ product.description|truncatewords:25 }}...</p>
+
+      <p>
+        <a href="{% url 'main:product_detail' product.id %}">
+          <button>Detail</button>
+        </a>
+      </p>
+    </div>
+    <hr>
+  {% endfor %}
+{% endif %}
+{% endblock content %}

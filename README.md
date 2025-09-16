@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #sports world
 
 *Explain how you implemented the checklist above step-by-step (not just by following the tutorial).*
@@ -24,6 +23,7 @@ Because it have a clear structure(MVT), comes with build in features, used in ma
 I think the instruction were clear 
 
 
+
 =======
 #sports world
 
@@ -47,4 +47,23 @@ Because it have a clear structure(MVT), comes with build in features, used in ma
 
 *Do you have any feedback for the teaching assistant for Tutorial 1 that you previously completed?*
 I think the instruction were clear 
+
 >>>>>>> 484edb8 (Assignment3)
+Assignment3
+*Why do we need data delivery in implementing a platform?
+We need data delivery so that different parts of the app (frontend, backend, mobile, API) can share and use the same data. Without data delivery, they cannot communicate.
+
+* In your opinion, which is better, XML or JSON? Why is JSON more popular than XML?
+JSON is better because it is simpler, shorter, and faster to read. XML is too heavy with tags. JSON is more popular because it works easily with JavaScript and modern apps.
+
+* What is the purpose of the is_valid() method in Django forms, and why do we need it?
+It checks if the form data is correct and safe. If valid, we can save it to the database. If not, Django will show errors.
+
+* Why do we need a csrf_token when making forms in Django? What can happen if we don't include a csrf_token in a Django form? How can this be exploited by an attacker?
+We need csrf_token to stop CSRF attacks. Without it, attackers can trick users into sending fake requests (like deleting data) without permission.
+
+* Explain how you implemented the checklist above step-by-step (not just following the tutorial).
+I made a Product model with fields like name, price, description, thumbnail, category, and is_featured. Then I created forms.py for product input. In views.py I added list, add, detail, XML, and JSON views. I updated urls.py for each route. I made templates (main.html, add_product.html, product_detail.html, and base.html). After testing locally, I checked data with Postman, then pushed everything to GitHub.
+
+*Do you have any feedback for the teaching assistants for Tutorial 2?
+The tutorial was clear, maybe add more tips for fixing common errors.

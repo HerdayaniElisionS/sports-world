@@ -152,3 +152,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://localhost',  
     'https://127.0.0.1',  
 ]
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'

@@ -8,3 +8,4 @@ class ProductForm(ModelForm):
         fields = ["name", "price", "description", "thumbnail", "category", "is_featured"]
 
     category = forms.ChoiceField(choices=[('shoes', 'Shoes'), ('equipment', 'Equipment'), ('jersey', 'Jersey')])
+

@@ -1,65 +1,118 @@
 {% extends 'base.html' %}
-{% block title %}Product Catalog{% endblock title %}
+{% load static %}
+{% block title %}Dashboard{% endblock title %}
+
 {% block content %}
-<h1>Product Catalog</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Product Catalog Heading -->
+    <h1 class="text-3xl font-semibold text-gray-900 mb-6">Product Catalog</h1>
 
-<h5>NPM:</h5>
-<p>{{ npm }}</p>
+    <!-- Action Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div class="flex items-center space-x-3">
+            <a href="?filter=all">
+                <button class="{% if request.GET.filter == 'all' or not request.GET.filter %}bg-blue-500 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %} px-5 py-2.5 rounded-full hover:opacity-90 transition-all">
+                    All Products
+                </button>
+            </a>
+            <a href="?filter=my">
+                <button class="{% if request.GET.filter == 'my' %}bg-blue-500 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %} px-5 py-2.5 rounded-full hover:opacity-90 transition-all">
+                    My Products
+                </button>
+            </a>
+        </div>
 
-<h5>Name:</h5>
-<p>{{ name }}</p>
-
-<h5>Class:</h5>
-<p>{{ class }}</p>
-
-<a href="{% url 'main:add_product' %}">
-  <button>+ Add Product</button>
-</a>
-
-<a href="{% url 'main:logout' %}">
-  <button>Logout</button>
-</a>
-
-<h5>Last login session: {{ last_login }}</h5>
-
-<a href="?filter=all">
-  <button type="button">All Product</button>
-</a>
-<a href="?filter=my">
-  <button type="button">My Product</button>
-</a> 
-
-<hr>
-
-{% if not products %}
-  <p>No products available.</p>
-{% else %}
-  {% for product in products %}
-    <div>
-      <h2>
-        <a href="{% url 'main:product_detail' product.id %}">{{ product.name }}</a>
-      </h2>
-
-      <p>
-        <b>Category:</b> {{ product.category }}
-        {% if product.is_featured %} | <b>Featured</b>{% endif %}
-        | <b>Price:</b> {{ product.price }}
-      </p>
-
-      {% if product.thumbnail %}
-        <img src="{{ product.thumbnail }}" alt="product image" width="150" height="100">
-        <br />
-      {% endif %}
-
-      <p>{{ product.description|truncatewords:25 }}...</p>
-
-      <p>
-        <a href="{% url 'main:product_detail' product.id %}">
-          <button>Detail</button>
+        <a href="{% url 'main:add_product' %}">
+            <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-full transition-colors">
+                + Add Product
+            </button>
         </a>
-      </p>
     </div>
-    <hr>
-  {% endfor %}
-{% endif %}
+
+    <!-- Products Grid -->
+    {% if not products %}
+        <div class="text-center py-12 bg-white rounded-2xl border border-gray-200">
+            <div class="w-48 h-48 mx-auto mb-6">
+                <img src="{% static 'image/image.png' %}" alt="No products available" class="w-full h-full object-contain">
+            </div>
+            <h3 class="text-2xl font-semibold text-gray-900 mb-2">No products available</h3>
+            <p class="text-gray-600 mb-6">Be the first to add a product to the catalog!</p>
+            <a href="{% url 'main:add_product' %}">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2.5 rounded-full transition-colors">
+                    Add Your First Product
+                </button>
+            </a>
+        </div>
+    {% else %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for product in products %}
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                    <!-- Product Image -->
+                    <div class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+                        {% if product.thumbnail %}
+                            <img src="{{ product.thumbnail }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                        {% else %}
+                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        {% endif %}
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <!-- Category Badge with Different Colors -->
+                            {% if product.category == 'shoes' %}
+                                <span class="text-xs font-medium text-orange-800 bg-orange-100 px-3 py-1 rounded-full uppercase">{{ product.category }}</span>
+                            {% elif product.category == 'jersey' %}
+                                <span class="text-xs font-medium text-purple-800 bg-purple-100 px-3 py-1 rounded-full uppercase">{{ product.category }}</span>
+                            {% elif product.category == 'equipment' %}
+                                <span class="text-xs font-medium text-amber-800 bg-amber-100 px-3 py-1 rounded-full uppercase">{{ product.category }}</span>
+                            {% else %}
+                                <span class="text-xs font-medium text-gray-600 uppercase">{{ product.category }}</span>
+                            {% endif %}
+                            
+                            {% if product.is_featured %}
+                                <span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full">Featured</span>
+                            {% endif %}
+                        </div>
+                        
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ product.name }}</h3>
+                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ product.description|truncatewords:15 }}</p>
+                        
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-2xl font-bold text-gray-900">Rp {{ product.price }}</span>
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="flex gap-2">
+                            <a href="{% url 'main:product_detail' product.id %}" class="flex-1">
+                                <button class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    View Details
+                                </button>
+                            </a>
+                            
+                            {% if user.is_authenticated and product.user == user %}
+                                <a href="{% url 'main:edit_product' product.id %}">
+                                    <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                        Edit
+                                    </button>
+                                </a>
+                                <a href="{% url 'main:delete_product' product.id %}">
+                                    <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                        Delete
+                                    </button>
+                                </a>
+                            {% endif %}
+                        </div>
+                        
+                        {% if product.user %}
+                            <p class="text-xs text-gray-500 mt-3">Seller: {{ product.user.username }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 {% endblock content %}

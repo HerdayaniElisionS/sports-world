@@ -86,5 +86,28 @@ Grid: A layout system that arranges items in both rows and columns at the same t
 I created Edit and Delete buttons for each product card, visible only to the product owner. I customized the design with SportsWorld branding using green for Sports and blue for World. All buttons use rounded corners so it looks modern. Each product category has a specific color to make it more noticable, orange for shoes, purple for jersey, and brown for equipment. The layout is fully responsive with a grid system that adapts from 1 to 3 columns based on screen size, and prices are displayed in Rp
 
 
+Sure! Here’s a short, beginner-style, human-written **README section** for your **Assignment 6**, matching the same tone and format as your earlier assignments:
+
+## Assignment 6
+
+### What is the difference between synchronous request and asynchronous request?
+
+Synchronous waits for the server to respond before continuing, while asynchronous can keep working without waiting.
+
+### How does AJAX work in Django (request–response flow)?
+
+AJAX sends data to a Django view using JavaScript, the view processes it and returns JSON, which updates the page without reloading.
+
+### What are the advantages of using AJAX compared to regular rendering in Django?
+
+AJAX makes the page faster and smoother because it updates parts of the page without reloading everything.
+
+### How do you ensure security when using AJAX for Login and Register features in Django?
+
+Use csrf_token, validate input on server, and use HTTPS to protect user data.
+
+### How does AJAX affect user experience (UX) on websites?
+
+It makes websites feel faster, smoother, and more interactive for users.
 
 

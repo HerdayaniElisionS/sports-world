@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ product.name }}{% endblock title %}
+{% block title %}Product Detail{% endblock title %}
 
 {% block content %}
 <div class="max-w-5xl mx-auto px-4 py-8">
@@ -16,44 +16,33 @@
         <div class="grid grid-cols-1 md:grid-cols-2">
             <!-- Product Image -->
             <div class="h-96 bg-gray-100 flex items-center justify-center">
-                {% if product.thumbnail %}
-                    <img src="{{ product.thumbnail }}" alt="{{ product.name }}" class="w-full h-full object-cover">
-                {% else %}
-                    <svg class="w-32 h-32 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                {% endif %}
+                <img id="pd-image" src="" alt="" class="w-full h-full object-cover hidden">
+                <svg id="pd-image-fallback" class="w-32 h-32 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
             </div>
 
             <!-- Product Information -->
             <div class="p-8">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="text-sm font-medium text-gray-600 uppercase">{{ product.category }}</span>
-                    {% if product.is_featured %}
-                        <span class="bg-yellow-100 text-yellow-800 text-sm px-3 py-1.5 rounded-full">Featured</span>
-                    {% endif %}
+                    <span id="pd-category" class="text-sm font-medium text-gray-600 uppercase"></span>
+                    <span id="pd-featured" class="bg-yellow-100 text-yellow-800 text-sm px-3 py-1.5 rounded-full hidden">Featured</span>
                 </div>
 
-                <h1 class="text-3xl font-semibold text-gray-900 mb-4">{{ product.name }}</h1>
+                <h1 id="pd-name" class="text-3xl font-semibold text-gray-900 mb-4"></h1>
                 
                 <div class="mb-6">
-                    <span class="text-4xl font-bold text-gray-900">Rp.{{ product.price }}</span>
+                    <span id="pd-price" class="text-4xl font-bold text-gray-900"></span>
                 </div>
 
                 <div class="border-t border-gray-200 pt-6 mb-6">
                     <h2 class="text-lg font-semibold text-gray-900 mb-3">Description</h2>
-                    <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
+                    <p id="pd-description" class="text-gray-700 leading-relaxed"></p>
                 </div>
 
                 <div class="bg-gray-50 rounded-xl p-4 mb-6">
                     <h3 class="text-sm font-semibold text-gray-900 mb-2">Seller Information</h3>
-                    <p class="text-gray-700">
-                        {% if product.user %}
-                            {{ product.user.username }}
-                        {% else %}
-                            Anonymous
-                        {% endif %}
-                    </p>
+                    <p id="pd-seller" class="text-gray-700"></p>
                 </div>
 
                 <button class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-full font-medium transition-colors">
@@ -63,4 +52,62 @@
         </div>
     </div>
 </div>
+
+<script>
+  // Inputs from view (views passes only product_id)
+  const PRODUCT_ID = "{{ product_id }}";
+  const DETAIL_URL = "{% url 'main:product_detail_json' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', PRODUCT_ID);
+
+  // DOM (preserve your classes/design)
+  const elName = document.getElementById('pd-name');
+  const elPrice = document.getElementById('pd-price');
+  const elCategory = document.getElementById('pd-category');
+  const elFeatured = document.getElementById('pd-featured');
+  const elDesc = document.getElementById('pd-description');
+  const elSeller = document.getElementById('pd-seller');
+  const elImg = document.getElementById('pd-image');
+  const elImgFallback = document.getElementById('pd-image-fallback');
+
+  function rupiah(n){
+    if(n == null) return '';
+    try { return new Intl.NumberFormat('id-ID').format(n); } catch { return n; }
+  }
+  function upper(s){ return (s||'').toString().toUpperCase(); }
+
+  async function loadProduct(){
+    try{
+      const res = await fetch(DETAIL_URL, { headers: { 'Accept': 'application/json' }});
+      if(!res.ok) return;
+      const p = await res.json();
+
+      const name = DOMPurify.sanitize(p.name || '');
+      const desc = DOMPurify.sanitize(p.description || '');
+      const cat = DOMPurify.sanitize(p.category || '');
+      const img = DOMPurify.sanitize(p.image_url || p.thumbnail || '');
+      const seller = DOMPurify.sanitize(p.user_username || p.user || 'Anonymous');
+
+      document.title = name ? name : 'Product Detail';
+      elName.textContent = name;
+      elPrice.textContent = p.price != null ? `Rp.${rupiah(p.price)}` : '';
+      elCategory.textContent = upper(cat);
+      elDesc.textContent = desc;
+      elSeller.textContent = seller;
+
+      if (p.is_featured) elFeatured.classList.remove('hidden'); else elFeatured.classList.add('hidden');
+
+      if (img){
+        elImg.src = img;
+        elImg.alt = name;
+        elImg.classList.remove('hidden');
+        elImgFallback.classList.add('hidden');
+      } else {
+        elImg.classList.add('hidden');
+        elImgFallback.classList.remove('hidden');
+      }
+    } catch(e){
+    }
+  }
+
+  loadProduct();
+</script>
 {% endblock content %}

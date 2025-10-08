@@ -6,14 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SportsWorld{% endblock title %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
     {% block meta %}{% endblock meta %}
 </head>
 <body class="bg-gray-50 min-h-screen">
+    {% include 'toast.html' %}
+    {% include 'modal.html' %}
+
     <!-- Rounded Navigation Bar -->
     <nav class="bg-white mx-4 mt-4 rounded-2xl shadow-sm border border-gray-200">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-between items-center h-16">
-                <!-- Left Side: Logo and Navigation Links -->
                 <div class="flex items-center space-x-8">
                     <a href="/" class="text-xl font-semibold">
                         <span class="text-green-600">Sports</span><span class="text-blue-600">World</span>
@@ -28,10 +31,8 @@
                     </div>
                 </div>
 
-                <!-- Right Side: User Info and Auth Buttons -->
                 <div class="flex items-center space-x-6">
                     {% if user.is_authenticated %}
-                        <!-- User Info on the Right -->
                         <div class="text-right">
                             <p class="text-gray-900 font-medium">{{ user.username }}</p>
                             <p class="text-xs text-gray-500">{{ npm }} - {{ class }}</p>
